@@ -2,8 +2,15 @@
 
 # List the ports you want to expose and what to do when they are served. See https://www.gitpod.io/docs/43_config_ports/
 ports:
-  - port: 3000
+  - name: whimbrel-workshop-app
+    port: 3000
     onOpen: open-preview
+    visibility: public
+
+tasks:
+  - before: cp .env.local.example .env.local
+    init: npm install
+    command: npm run dev
 
 github:
   prebuilds:

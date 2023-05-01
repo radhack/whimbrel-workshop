@@ -13,8 +13,8 @@ const Home: NextPage = () => {
         <h1 className="text-6xl font-bold">
           Welcome to{' '}
           <a className="text-indigo-600" href="https://tryfinch.com">
-            Parrot!
-          </a>
+            Whimbrel
+          </a>!
         </h1>
 
         <p className="mt-3 text-2xl max-w-xl">
