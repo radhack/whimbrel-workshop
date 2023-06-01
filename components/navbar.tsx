@@ -4,7 +4,7 @@ import { MenuIcon, XIcon, ArrowRightIcon, DownloadIcon } from '@heroicons/react/
 import { classNames } from '../util/classnames'
 import { baseUrl } from '../util/constants'
 import Image from 'next/image'
-// import { FinchConnect } from './finch-connect'
+import { FinchConnect } from './finch-connect'
 
 import gustoLogo from '../public/img/providers/gusto.png'
 import bamboohrLogo from '../public/img/providers/bamboohr.png'
@@ -27,6 +27,7 @@ const finchOptions = {
 }
 
 export default function NavBar() {
+  const { embeddedFinchConnect, redirectFinchConnect } = FinchConnect()
 
 
   const createNewSandbox = async (payroll_provider: string) => {
@@ -125,11 +126,26 @@ export default function NavBar() {
                         )}
                       </Menu.Item>
 
-                      {/* 
-                      
-                      MENU ITEMS GO HERE
-                      
-                      */}
+                      <Menu.Item>
+                        {({ active }) => (
+                            <a
+                                href={redirectFinchConnect}
+                                className={classNames(active ? 'bg-gray-100 border-t cursor-pointer' : '', 'block px-4 py-2 text-sm text-gray-700 border-t')}
+                            >
+                              + Redirect Flow
+                            </a>
+                        )}
+                      </Menu.Item>
+                        <Menu.Item>
+                      {({ active }) => (
+                        <a
+                        onClick={() => embeddedFinchConnect()}
+                        className={classNames(active ? 'bg-gray-100 cursor-pointer' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                        >
+                        + Embed Flow
+                        </a>
+                        )}
+                        </Menu.Item>
 
 
                       <Menu.Item>

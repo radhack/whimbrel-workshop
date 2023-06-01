@@ -1,4 +1,5 @@
 import { baseUrl } from '../util/constants'
+import { useFinchConnect, ErrorEvent, SuccessEvent, } from 'react-finch-connect';
 
 type FinchConnectOptions = {
     products?: string[],
@@ -9,5 +10,22 @@ type FinchConnectOptions = {
 const products = ["company", "directory", "individual", "employment", "payment", "pay_statement"]
 
 export function FinchConnect(options?: FinchConnectOptions) {
+    const onSuccess = async (e: SuccessEvent) => {
+        return fetch(`/api/finch/callback?code=${e.code}&embedded=true`)
+    }
+    const onError = (e: ErrorEvent) => console.error(e.errorMessage)
+    const onClose = () => console.log("User exited Finch Connect")
+    const redirectFinchConnect = `https://connect.tryfinch.com/authorize?client_id=${process.env.NEXT_PUBLIC_FINCH_CLIENT_ID}&products=${products.join(' ')}&redirect_uri=${baseUrl}/api/finch/callback&sandbox=true&state=customerId123`
 
+    // console.log(process.env.NEXT_PUBLIC_FINCH_CLIENT_ID, 'is the Client ID here');
+    const { open: embeddedFinchConnect } = useFinchConnect({
+        clientId: process.env.NEXT_PUBLIC_FINCH_CLIENT_ID ?? '',
+        payrollProvider: options?.payroll_provider,
+        products: products,
+        sandbox: true, // Set sandbox=false if using Dev or Prod credentials
+        onSuccess,
+        onError,
+        onClose
+    });
+    return { embeddedFinchConnect, redirectFinchConnect }
 }
