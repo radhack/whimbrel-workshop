@@ -20,18 +20,18 @@ const endDate = formatDate(dateRange[endDateInit - 2])
 export default function Payroll() {
     const [startDateNum, setStartDateNum] = useState<number>(startDateInit)
     const [endDateNum, setEndDateNum] = useState<number>(endDateInit)
-    const { data, error } = useSWR(`/api/finch/payment?start_date=${startDate}&end_date=${endDate}`, { revalidateOnFocus: false })
-    const [payroll, setPayroll] = useState<FinchPayment[]>()
+    // const { data, error } = useSWR(`/api/finch/payment?start_date=${startDate}&end_date=${endDate}`, { revalidateOnFocus: false })
+    // const [payroll, setPayroll] = useState<FinchPayment[]>()
     const [toggle, setToggle] = useState(true)
 
-    useEffect(() => {
-        //console.log(data)
-        setPayroll(data)
-    }, [data])
+    // useEffect(() => {
+    //     //console.log(data)
+    //     setPayroll(data)
+    // }, [data])
 
-    if (error) return <pre className="mx-auto max-w-5xl p-10">{JSON.stringify(error.message, null, 2)}</pre>
-    if (!data || !payroll) return ""
-    if (data.code == 501) return data.message
+    // if (error) return <pre className="mx-auto max-w-5xl p-10">{JSON.stringify(error.message, null, 2)}</pre>
+    // if (!data || !payroll) return ""
+    // if (data.code == 501) return data.message
 
     return (
         <div className="bg-white py-12">
@@ -41,17 +41,17 @@ export default function Payroll() {
                         Finch
                     </h2>
                     <p className="mt-2 text-3xl font-extrabold leading-8 tracking-tight text-gray-900 sm:text-4xl">
-                        Payroll
+                        Payroll -- DISABLED
                     </p>
                     <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-                        Read payroll and contractor related payments by the company.
+                        If enabled, you could read more about payroll and contractor related payments by the company here.
                         <br></br>
                         Learn more about the <a className='text-indigo-600' href="https://developer.tryfinch.com/docs/reference/b811fdc2542ca-payment" target="_blank">/payment</a> API Endpoint.
                     </p>
 
-                    <p className="mt-4 mb-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-                        Filter the last three years of payroll payments by 'start_date' and 'end_date'.
-                    </p>
+                    {/*<p className="mt-4 mb-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">*/}
+                    {/*    Filter the last three years of payroll payments by 'start_date' and 'end_date'.*/}
+                    {/*</p>*/}
                 </div>
 
                 <MultiRangeSlider
@@ -94,24 +94,24 @@ export default function Payroll() {
                                                 </th>
                                             </tr>
                                         </thead>
-                                        <tbody className="bg-white">
-                                            {payroll.filter(payment => {
-                                                return payment?.pay_period?.start_date > formatDate(dateRange[startDateNum - 1]) && payment?.pay_period?.end_date < formatDate(dateRange[endDateNum - 2])
-                                            }).map((payment, index) => (
-                                                <tr className="border-t border-gray-300" key={index}>
-                                                    <td className="whitespace-nowrap py-4 pl-4 text-sm font-semibold text-gray-900 sm:pl-6">{payment.id}</td>
-                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{parseDate(payment.pay_period.start_date)}</td>
-                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{parseDate(payment.pay_period.end_date)}</td>
-                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{parseDate(payment.pay_date)}</td>
-                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{parseDate(payment.debit_date)}</td>
-                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{formatCurrency(payment.gross_pay.amount) + ' ' + payment.gross_pay.currency.toUpperCase()}</td>
-                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{formatCurrency(payment.net_pay.amount) + ' ' + payment.net_pay.currency.toUpperCase()}</td>
-                                                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                                        <a href={`/payment/${payment.id}?start_date=${payment.pay_period.start_date}&end_date=${payment.pay_period.end_date}`} className="text-indigo-600 hover:text-indigo-900">View<span className="sr-only">{payment.id}</span></a>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
+                                        {/*<tbody className="bg-white">*/}
+                                        {/*    {payroll.filter(payment => {*/}
+                                        {/*        return payment?.pay_period?.start_date > formatDate(dateRange[startDateNum - 1]) && payment?.pay_period?.end_date < formatDate(dateRange[endDateNum - 2])*/}
+                                        {/*    }).map((payment, index) => (*/}
+                                        {/*        <tr className="border-t border-gray-300" key={index}>*/}
+                                        {/*            <td className="whitespace-nowrap py-4 pl-4 text-sm font-semibold text-gray-900 sm:pl-6">{payment.id}</td>*/}
+                                        {/*            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{parseDate(payment.pay_period.start_date)}</td>*/}
+                                        {/*            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{parseDate(payment.pay_period.end_date)}</td>*/}
+                                        {/*            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{parseDate(payment.pay_date)}</td>*/}
+                                        {/*            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{parseDate(payment.debit_date)}</td>*/}
+                                        {/*            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{formatCurrency(payment.gross_pay.amount) + ' ' + payment.gross_pay.currency.toUpperCase()}</td>*/}
+                                        {/*            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{formatCurrency(payment.net_pay.amount) + ' ' + payment.net_pay.currency.toUpperCase()}</td>*/}
+                                        {/*            <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">*/}
+                                        {/*                <a href={`/payment/${payment.id}?start_date=${payment.pay_period.start_date}&end_date=${payment.pay_period.end_date}`} className="text-indigo-600 hover:text-indigo-900">View<span className="sr-only">{payment.id}</span></a>*/}
+                                        {/*            </td>*/}
+                                        {/*        </tr>*/}
+                                        {/*    ))}*/}
+                                        {/*</tbody>*/}
                                     </table>
                                 </div>
                             </div>
@@ -125,12 +125,12 @@ export default function Payroll() {
                             <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                                 <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                                <CodeBlock
-                                    text={JSON.stringify(payroll, null, "\t")}
-                                    language='json'
-                                    showLineNumbers={true}
-                                    theme={nord}
-                                />
+                                {/*<CodeBlock*/}
+                                {/*    text={JSON.stringify(payroll, null, "\t")}*/}
+                                {/*    language='json'*/}
+                                {/*    showLineNumbers={true}*/}
+                                {/*    theme={nord}*/}
+                                {/*/>*/}
                                 </div>
                             </div>
                             </div>
