@@ -37,80 +37,80 @@ export default async function DownloadPayroll(req: NextApiRequest, res: NextApiR
     const end_date = '2023-02-01'
 
 
-    if (req.method == 'GET') {
-        try {
-            const token = await database.getConnectionToken()
-            const apiUrl = (await database.isSandbox()) ? sandboxApiUrl : finchApiUrl
-
-            // Get connection details
-            const introspectRes = await axios({
-                method: 'get',
-                url: `${apiUrl}/introspect`,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Finch-API-Version': '2020-09-17'
-                },
-            });
-            const companyId = introspectRes.data.company_id
-            const payrollProviderId = introspectRes.data.payroll_provider_id
-
-            // Get the company directory info
-            const directoryRes = await axios.request<FinchDirectoryRes>({
-                method: 'get',
-                url: `${baseUrl}/api/finch/directory`,
-            });
-
-            // Get all payments between a date range
-            const paymentRes = await axios.request<FinchPayment[]>({
-                method: 'get',
-                url: `${baseUrl}/api/finch/payment?start_date=${start_date}&end_date=${end_date}`,
-            })
-
-            var payData: PayData = [] // we will pass this to the json2csv converter
-            var paymentIds: { payment_id: string }[] = [] // we will use these aggregated ids to call the /pay-statement endpoint
-
-            paymentRes.data.forEach(payment => {
-                payData.push({
-                    payment_id: payment.id,
-                    pay_date: payment.pay_date,
-                    pay_statements: [] // we will add this later once we call the /pay-statements endpoint
-                })
-                paymentIds.push({ payment_id: payment.id })
-            })
-
-            // Get the pay-statement details for each payment_id (sent as a single "batched" request)
-            // TODO: The only reason we are calling the API directly is because they /api/finch/pay-statement endpoint only takes a single payment_id right now
-            const payStatementRes = await axios.request<FinchPayStatementsRes>({
-                method: 'post',
-                url: `${apiUrl}/employer/pay-statement`,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Finch-API-Version': '2020-09-17'
-                },
-                data: {
-                    requests: paymentIds
-                }
-            })
-
-            // For each pay-statement, match the individual pay-statements with the payment details
-            payStatementRes.data.responses.forEach(response => {
-                var payment = payData.find(payment => payment.payment_id === response.payment_id)
-                if (payment)
-                    payment.pay_statements = response.body.pay_statements // there is a payment_id match, update the pay_statements with the pay_date
-            })
-
-
-            // Convert the pay data to CSV file
-            const csv = json2csv_payroll(directoryRes.data.individuals, payData)
-
-            res.setHeader('Content-Type', 'application/csv');
-            res.setHeader('Content-Disposition', `attachment; filename=finch-${companyId}-${payrollProviderId}-payroll.csv`);
-            return res.status(200).send(csv);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).redirect("/connection").json("Error downloading Finch payroll data")
-        }
-    }
+    // if (req.method == 'GET') {
+    //     try {
+    //         const token = await database.getConnectionToken()
+    //         const apiUrl = (await database.isSandbox()) ? sandboxApiUrl : finchApiUrl
+    //
+    //         // Get connection details
+    //         const introspectRes = await axios({
+    //             method: 'get',
+    //             url: `${apiUrl}/introspect`,
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //                 'Finch-API-Version': '2020-09-17'
+    //             },
+    //         });
+    //         const companyId = introspectRes.data.company_id
+    //         const payrollProviderId = introspectRes.data.payroll_provider_id
+    //
+    //         // Get the company directory info
+    //         const directoryRes = await axios.request<FinchDirectoryRes>({
+    //             method: 'get',
+    //             url: `${baseUrl}/api/finch/directory`,
+    //         });
+    //
+    //         // Get all payments between a date range
+    //         // const paymentRes = await axios.request<FinchPayment[]>({
+    //         //     method: 'get',
+    //         //     url: `${baseUrl}/api/finch/payment?start_date=${start_date}&end_date=${end_date}`,
+    //         // })
+    //
+    //         var payData: PayData = [] // we will pass this to the json2csv converter
+    //         var paymentIds: { payment_id: string }[] = [] // we will use these aggregated ids to call the /pay-statement endpoint
+    //
+    //         // paymentRes.data.forEach(payment => {
+    //         //     payData.push({
+    //         //         payment_id: payment.id,
+    //         //         pay_date: payment.pay_date,
+    //         //         pay_statements: [] // we will add this later once we call the /pay-statements endpoint
+    //         //     })
+    //         //     paymentIds.push({ payment_id: payment.id })
+    //         // })
+    //
+    //         // Get the pay-statement details for each payment_id (sent as a single "batched" request)
+    //         // TODO: The only reason we are calling the API directly is because they /api/finch/pay-statement endpoint only takes a single payment_id right now
+    //         // const payStatementRes = await axios.request<FinchPayStatementsRes>({
+    //         //     method: 'post',
+    //         //     url: `${apiUrl}/employer/pay-statement`,
+    //         //     headers: {
+    //         //         Authorization: `Bearer ${token}`,
+    //         //         'Finch-API-Version': '2020-09-17'
+    //         //     },
+    //         //     data: {
+    //         //         requests: paymentIds
+    //         //     }
+    //         // })
+    //
+    //         // For each pay-statement, match the individual pay-statements with the payment details
+    //         // payStatementRes.data.responses.forEach(response => {
+    //         //     var payment = payData.find(payment => payment.payment_id === response.payment_id)
+    //         //     if (payment)
+    //         //         payment.pay_statements = response.body.pay_statements // there is a payment_id match, update the pay_statements with the pay_date
+    //         // })
+    //
+    //
+    //         // Convert the pay data to CSV file
+    //         const csv = json2csv_payroll(directoryRes.data.individuals, payData)
+    //
+    //         res.setHeader('Content-Type', 'application/csv');
+    //         res.setHeader('Content-Disposition', `attachment; filename=finch-${companyId}-${payrollProviderId}-payroll.csv`);
+    //         return res.status(200).send(csv);
+    //     } catch (error) {
+    //         console.error(error);
+    //         return res.status(500).redirect("/connection").json("Error downloading Finch payroll data")
+    //     }
+    // }
 
     return res.status(405).json("Method not implemented.")
 };
