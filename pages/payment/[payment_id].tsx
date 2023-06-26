@@ -12,19 +12,19 @@ import { formatCurrency, parseDate } from '../../util/format'
 *****************/
 export default function Payment() {
   const { payment_id, start_date, end_date } = useRouter().query
-  const { data, error } = useSWR(payment_id ? `/api/finch/pay-statement/${payment_id}` : null, { revalidateOnFocus: false })
+  // const { data, error } = useSWR(payment_id ? `/api/finch/pay-statement/${payment_id}` : null, { revalidateOnFocus: false })
   const [payments, setPayments] = useState<FinchPayStatement[]>()
   const [detailsOpen, setDetailsOpen] = useState(false)
   const [detailsPayment, setDetailsPayment] = useState<FinchPayStatement>()
 
-  useEffect(() => {
-    console.log(data?.responses[0].body.pay_statements);
-    setPayments(data?.responses[0].body.pay_statements);
-  }, [data])
+  // useEffect(() => {
+  //   console.log(data?.responses[0].body.pay_statements);
+  //   setPayments(data?.responses[0].body.pay_statements);
+  // }, [data])
 
   if (!payment_id || !start_date || !end_date) return "payment_id, start_date, and end_date URL parameters are required.";
-  if (error) return <pre className="mx-auto max-w-5xl p-10">{JSON.stringify(error.message, null, 2)}</pre>
-  if (!data?.responses || !payments) return "";
+  // if (error) return <pre className="mx-auto max-w-5xl p-10">{JSON.stringify(error.message, null, 2)}</pre>
+  // if (!data?.responses || !payments) return "";
 
   return (
     <div className="bg-white py-12">
@@ -34,10 +34,10 @@ export default function Payment() {
             Finch
           </h2>
           <p className="mt-2 text-3xl font-extrabold leading-8 tracking-tight text-gray-900 sm:text-4xl">
-            Pay Statement
+            Pay Statement -- DISABLED
           </p>
           <p className="mt-4 mb-16 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-            Read detailed pay statements for each individual.
+            If enabled, you could read detailed pay statements for each individual.
             <br></br>
             Learn more about the <a className='text-indigo-600' href="https://developer.tryfinch.com/docs/reference/d5fd02c41e83a-pay-statement" target="_blank">/pay-statement</a> API Endpoint.
           </p>
@@ -67,32 +67,32 @@ export default function Payment() {
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white">
-                      {payments.map((payment, index) => (
-                        <>
-                          <tr className="border-t border-gray-300" key={index}>
-                            <td className="whitespace-nowrap py-4 pl-4 text-sm font-semibold text-gray-900 sm:pl-6">
-                              <a href={`/employee/${payment.individual_id}`} className="text-indigo-600 hover:text-indigo-900">{payment.individual_id}</a>
-                            </td>
-                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{payment?.type}</td>
-                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{payment?.payment_method}</td>
-                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{payment?.total_hours ? payment?.total_hours : 'none'}</td>
-                            <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                              <a onClick={() => {
-                                setDetailsPayment(payment);
-                                setDetailsOpen(true);
-                              }} className="text-indigo-600 hover:text-indigo-900 cursor-pointer">
-                                View Individual Pay Data
-                              </a>
-                            </td>
-                          </tr>
+                    {/*<tbody className="bg-white">*/}
+                    {/*  {payments.map((payment, index) => (*/}
+                    {/*    <>*/}
+                    {/*      <tr className="border-t border-gray-300" key={index}>*/}
+                    {/*        <td className="whitespace-nowrap py-4 pl-4 text-sm font-semibold text-gray-900 sm:pl-6">*/}
+                    {/*          <a href={`/employee/${payment.individual_id}`} className="text-indigo-600 hover:text-indigo-900">{payment.individual_id}</a>*/}
+                    {/*        </td>*/}
+                    {/*        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{payment?.type}</td>*/}
+                    {/*        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{payment?.payment_method}</td>*/}
+                    {/*        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{payment?.total_hours ? payment?.total_hours : 'none'}</td>*/}
+                    {/*        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">*/}
+                    {/*          <a onClick={() => {*/}
+                    {/*            setDetailsPayment(payment);*/}
+                    {/*            setDetailsOpen(true);*/}
+                    {/*          }} className="text-indigo-600 hover:text-indigo-900 cursor-pointer">*/}
+                    {/*            View Individual Pay Data*/}
+                    {/*          </a>*/}
+                    {/*        </td>*/}
+                    {/*      </tr>*/}
 
 
-                        </>
-                      ))}
+                    {/*    </>*/}
+                    {/*  ))}*/}
 
 
-                    </tbody>
+                    {/*</tbody>*/}
                   </table>
                   <Transition.Root show={detailsOpen} as={Fragment}>
                     <Dialog as="div" className="relative z-10" onClose={() => setDetailsOpen(false)}>
