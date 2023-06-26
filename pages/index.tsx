@@ -11,18 +11,18 @@ const Home: NextPage = () => {
 
       <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
         <h1 className="text-6xl font-bold">
-          Welcome to{' '}
+          Welcome to Alex Griffen's version of{' '}
           <a className="text-indigo-600" href="https://tryfinch.com">
             Whimbrel
           </a>!
         </h1>
 
         <p className="mt-3 text-2xl max-w-xl">
-          Get started by editing{' '}
+          I got started by editing{' '}
           <code className="rounded-md bg-gray-100 p-2 font-mono text-lg">
             components/finch-connect.tsx
           </code>
-          {' '} before adding a new connection.
+          {' '} before I added a new connection.
         </p>
 
         <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
