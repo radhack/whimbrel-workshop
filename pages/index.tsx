@@ -18,9 +18,11 @@ const Home: NextPage = () => {
         </h1>
 
         <p className="mt-3 text-2xl max-w-xl">
-          I got started by editing{' '}
+          I got started by forking the{' '}
           <code className="rounded-md bg-gray-100 p-2 font-mono text-lg">
-            components/finch-connect.tsx
+            <a target="_blank" href="https://github.com/radhack/whimbrel-workshop">
+              Whimbrel Git Repo
+            </a>
           </code>
           {' '} before I added a new connection.
         </p>
